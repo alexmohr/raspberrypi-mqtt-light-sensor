@@ -6,6 +6,7 @@ and publishes the result via mqtt.
 import RPi.GPIO as GPIO
 import time
 import paho.mqtt.client as mqtt
+import json
 
 from datetime import datetime
 
@@ -13,7 +14,7 @@ GPIO.setmode(GPIO.BCM)
 
 # todo export into configuration file
 __PIN = 25
-__SAMPLES = 10
+__SAMPLES = 5
 __MQTT_SERVER = '127.0.0.1'
 __MQTT_TOPIC = 'sensors/brightness'
 
@@ -47,22 +48,22 @@ def charge_time_ms(pin):
     start_time = datetime.now()
     while (GPIO.input(pin) == GPIO.LOW):
         time.sleep(0.001)
-    
-    delta_t = start_time - datetime.now()
-    return delta_t.microsecond / 1000
+   
+    delta_t = datetime.now() - start_time
+    return delta_t.total_seconds() * 1000 + (delta_t.microseconds / 1000)
 
 
-def mqtt_publish(mqttc, topic, value):
+def mqtt_publish(mqtt_server, topic, value):
     """
     Publishes the new measured value via mqtt. 
     """
-    mqttc.publish(topic, value)
-
-
-if __name__ == "__main__":
     mqttc = mqtt.Client()
     mqttc.connect(__MQTT_SERVER)
 
+    mqtt_value = json.dumps({'brightness': value})
+    mqttc.publish(topic, mqtt_value)
+
+if __name__ == "__main__":
     times = []
 
     discharge_capacity(__PIN)
@@ -74,7 +75,7 @@ if __name__ == "__main__":
                 times.append(charge_time)
 
             average_time = sum(times) / float(len(times))
-            mqtt_publish(mqttc, __MQTT_TOPIC, average_time)
+            mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
            
             times = []
 
