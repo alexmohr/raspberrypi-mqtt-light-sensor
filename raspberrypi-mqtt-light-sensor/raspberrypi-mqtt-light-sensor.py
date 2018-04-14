@@ -78,7 +78,7 @@ if __name__ == "__main__":
                 charge_time = charge_time_ms(__PIN)
                 times.append(charge_time)
                 delta_t = datetime.now() - start_time
-            average_time = sum(times) / float(len(times))
+            average_time = math.ceil(sum(times) / float(len(times)))
             mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
             times = []
             
