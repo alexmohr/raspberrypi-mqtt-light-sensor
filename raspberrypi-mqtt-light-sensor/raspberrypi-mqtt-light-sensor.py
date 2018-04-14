@@ -52,8 +52,8 @@ def charge_time_ms(pin):
         time.sleep(0.001)
    
     delta_t = datetime.now() - start_time
-    return delta_t.total_seconds() * 1000 + (delta_t.microseconds / 1000)
-
+    elapsed = delta_t.total_seconds() * 1000 + (delta_t.microseconds / 1000)
+    return math.ceil(elapsed)
 
 def mqtt_publish(mqtt_server, topic, value):
     """
@@ -72,19 +72,16 @@ if __name__ == "__main__":
 
     try:
         while True:
-            start_time = datetime.now()
-            while len(times) < __SAMPLES:
+            start_time = datetime.now() 
+            delta_t = datetime.now() - start_time
+            while len(times) < __SAMPLES and delta_t.total_seconds() < __MIN_TIME_SECONDS:
                 charge_time = charge_time_ms(__PIN)
                 times.append(charge_time)
-
-            average_time = sum(times) / float(len(times))
-            mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
-            times = []
-
-            delta_t = datetime.now() - start_time
-            if delta_t.total_seconds() < __MIN_TIME_SECONDS:
-                time.sleep(__MIN_TIME_SECONDS - delta_t.total_seconds())
-
+                delta_t = datetime.now() - start_time
+                average_time = sum(times) / float(len(times))
+                mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
+                times = []
+            
             
 
     except KeyboardInterrupt:
