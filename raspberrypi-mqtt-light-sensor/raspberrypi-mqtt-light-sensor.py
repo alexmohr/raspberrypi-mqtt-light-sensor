@@ -74,7 +74,7 @@ if __name__ == "__main__":
         while True:
             start_time = datetime.now() 
             delta_t = datetime.now() - start_time
-            while len(times) < __SAMPLES and delta_t.total_seconds() < __MIN_TIME_SECONDS:
+            while len(times) < __SAMPLES or delta_t.total_seconds() < __MIN_TIME_SECONDS:
                 charge_time = charge_time_ms(__PIN)
                 times.append(charge_time)
                 delta_t = datetime.now() - start_time
