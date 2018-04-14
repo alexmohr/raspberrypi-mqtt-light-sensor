@@ -7,6 +7,7 @@ import RPi.GPIO as GPIO
 import time
 import paho.mqtt.client as mqtt
 import json
+import math
 
 from datetime import datetime
 
@@ -15,6 +16,7 @@ GPIO.setmode(GPIO.BCM)
 # todo export into configuration file
 __PIN = 25
 __SAMPLES = 5
+__MIN_TIME_SECONDS = 10
 __MQTT_SERVER = '127.0.0.1'
 __MQTT_TOPIC = 'sensors/brightness'
 
@@ -50,7 +52,7 @@ def charge_time_ms(pin):
         time.sleep(0.001)
    
     delta_t = datetime.now() - start_time
-    return delta_t.total_seconds() * 1000 + (delta_t.microseconds / 1000)
+    return math.ceil(delta_t.total_seconds() * 1000 + (delta_t.microseconds / 1000))
 
 
 def mqtt_publish(mqtt_server, topic, value):
@@ -70,14 +72,20 @@ if __name__ == "__main__":
 
     try:
         while True:
+            start_time = datetime.now()
             while len(times) < __SAMPLES:
                 charge_time = charge_time_ms(__PIN)
                 times.append(charge_time)
 
             average_time = sum(times) / float(len(times))
             mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
-           
             times = []
+
+            delta_t = datetime.now() = start_time
+            if delta_t.total_seconds() < __MIN_TIME_SECONDS:
+                time.sleep(__MIN_TIME_SECONDS - delta_t.total_seconds())
+
+            
 
     except KeyboardInterrupt:
         pass
