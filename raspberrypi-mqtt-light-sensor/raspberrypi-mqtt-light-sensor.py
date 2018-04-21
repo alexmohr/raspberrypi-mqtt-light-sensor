@@ -73,13 +73,13 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--pin', required=False,
                         help='Defines the GPIO pin used.')
 
-    parser.add_argument('-h', '--host', required=False,
+    parser.add_argument('-m', '--mqtt-host', required=False,
                         help='Defines the MQTT server.')
 
-    parser.add_argument('-s', '--seconds', required=True,
+    parser.add_argument('-s', '--seconds', required=False,
                         help='How long the measurement is before mqtt push. Values will be averaged.')
 
-    parser.add_argument('-t', '--topic', required=True,
+    parser.add_argument('-t', '--topic', required=False,
                         help='Defines the mqtt topic.')
 
     args = parser.parse_args()
@@ -90,8 +90,8 @@ if __name__ == "__main__":
     if args.seconds is not None:
         __MIN_TIME_SECONDS = args.seconds
 
-    if args.host is not None:
-        __MQTT_SERVER = args.host
+    if args.mqtt_host is not None:
+        __MQTT_SERVER = args.mqtt_host
 
     if args.topic is not None:
         __MQTT_TOPIC = args.topic
