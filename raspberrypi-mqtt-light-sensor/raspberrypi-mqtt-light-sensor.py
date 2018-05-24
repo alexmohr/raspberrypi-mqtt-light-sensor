@@ -1,6 +1,6 @@
 """
-Measures the time how long it takes to charge a capacity, averages 10 measurement 
-and publishes the result via mqtt. 
+Measures the time how long it takes to charge a capacity, averages 10 measurement
+and publishes the result via mqtt.
 """
 
 import RPi.GPIO as GPIO
@@ -56,7 +56,7 @@ def charge_time_ms(pin):
 
 def mqtt_publish(mqtt_server, topic, value):
     """
-    Publishes the new measured value via mqtt. 
+    Publishes the new measured value via mqtt.
     """
     mqttc = mqtt.Client()
     mqttc.connect(__MQTT_SERVER)
@@ -85,7 +85,7 @@ if __name__ == "__main__":
                         help='Defines the mqtt topic.')
 
     args = parser.parse_args()
-    
+
     if args.pin is not None:
         __PIN = args.pin
 
