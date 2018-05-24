@@ -19,7 +19,7 @@ with open('README.md', 'r') as myfile:
 setup(name='raspberrypi-mqtt-light-sensor',
       # this must be the same as the name above
       packages=['raspberrypi-mqtt-light-sensor'],
-      version='0.2.1',
+      version='0.2.2',
       description='Reading a LDR with a raspberry pi and publishing the data via mqtt',
       long_description=long_description,
       long_description_content_type='text/markdown',
@@ -27,7 +27,7 @@ setup(name='raspberrypi-mqtt-light-sensor',
       author_email='pypy@mohr.io',
       # use the URL to the github repo
       url='https://github.com/alexmohr/raspberrypi-mqtt-light-sensor',
-      download_url='https://codeload.github.com/alexmohr/raspberrypi-mqtt-light-sensor/tar.gz/0.2.1',
+      download_url='https://codeload.github.com/alexmohr/raspberrypi-mqtt-light-sensor/tar.gz/0.2.2',
       keywords=['mqtt', 'rpi', 'raspberypi', 'light', 'sensor'],
       license='MIT',
       classifiers=[],

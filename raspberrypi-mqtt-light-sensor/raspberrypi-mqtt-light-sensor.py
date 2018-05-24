@@ -20,7 +20,7 @@ __SAMPLES = 5
 __MIN_TIME_SECONDS = 10
 __MQTT_SERVER = '127.0.0.1'
 __MQTT_TOPIC = 'sensors/brightness'
-
+__NUMBERS = 4
 
 def discharge_capacity(pin):
     """
@@ -52,8 +52,7 @@ def charge_time_ms(pin):
 
     delta_t = datetime.now() - start_time
     elapsed = delta_t.total_seconds() * 1000 + (delta_t.microseconds / 1000)
-    return math.ceil(elapsed)
-
+    return elapsed 
 
 def mqtt_publish(mqtt_server, topic, value):
     """
@@ -76,6 +75,9 @@ if __name__ == "__main__":
     parser.add_argument('-m', '--mqtt-host', required=False,
                         help='Defines the MQTT server.')
 
+    parser.add_argument('-n', '--numbers', required=False,
+                        help='Defines to how many number after decimal point we will round.')
+
     parser.add_argument('-s', '--seconds', required=False,
                         help='How long the measurement is before mqtt push. Values will be averaged.')
 
@@ -96,6 +98,9 @@ if __name__ == "__main__":
     if args.topic is not None:
         __MQTT_TOPIC = args.topic
 
+    if args.numbers is not None:
+            NUMBERS = int(args.numbers)
+
 
     times = []
 
@@ -111,7 +116,7 @@ if __name__ == "__main__":
                 charge_time = charge_time_ms(__PIN)
                 times.append(charge_time)
                 delta_t = datetime.now() - start_time
-            average_time = math.ceil(sum(times) / float(len(times)))
+            average_time = round(sum(times) / float(len(times)), __NUMBERS)
             mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
             times = []
 
