@@ -14,8 +14,8 @@ from datetime import datetime
 
 GPIO.setmode(GPIO.BCM)
 
-# todo export into configuration file
-__PIN = 25
+# can be set via parameter
+__PIN = 18
 __SAMPLES = 5
 __MIN_TIME_SECONDS = 10
 __MQTT_SERVER = '127.0.0.1'
@@ -87,10 +87,10 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.pin is not None:
-        __PIN = args.pin
+        __PIN = int(args.pin)
 
     if args.seconds is not None:
-        __MIN_TIME_SECONDS = args.seconds
+        __MIN_TIME_SECONDS = int(args.seconds)
 
     if args.mqtt_host is not None:
         __MQTT_SERVER = args.mqtt_host
