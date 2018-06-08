@@ -5,6 +5,8 @@ Because the pi does not have any analog inputs the scripts measures how long it 
 The script will takes n measurements, averages them and publishes the result via MQTT.
 In my setup the MQTT data will be read by home assistant and is used to control the lights.
 
+Requires python3 to run.
+
 ## Installation
 `pip install raspberrypi-mqtt-light-sensor`
 
