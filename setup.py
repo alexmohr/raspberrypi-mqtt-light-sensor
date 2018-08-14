@@ -19,7 +19,7 @@ with open('README.md', 'r') as myfile:
 setup(name='raspberrypi-mqtt-light-sensor',
       # this must be the same as the name above
       packages=['raspberrypi-mqtt-light-sensor'],
-      version='0.2.3',
+      version='0.3.0',
       description='Reading a LDR with a raspberry pi and publishing the data via mqtt',
       long_description=long_description,
       long_description_content_type='text/markdown',
