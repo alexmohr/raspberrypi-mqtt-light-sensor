@@ -15,12 +15,13 @@ from datetime import datetime
 GPIO.setmode(GPIO.BCM)
 
 # can be set via parameter
-__PIN = 18
+__PIN = 5
 __SAMPLES = 5
 __MIN_TIME_SECONDS = 10
 __MQTT_SERVER = '127.0.0.1'
 __MQTT_TOPIC = 'sensors/brightness'
-__NUMBERS = 4
+__NUMBERS = 0
+__THRESHOLD = 1
 
 def discharge_capacity(pin):
     """
@@ -84,6 +85,9 @@ if __name__ == "__main__":
     parser.add_argument('-t', '--topic', required=False,
                         help='Defines the mqtt topic.')
 
+    parser.add_argument('-l', '--threshold', required=False,
+                        help='Defines the threshold the measured values must derive for the mqtt message to be send.')
+
     args = parser.parse_args()
 
     if args.pin is not None:
@@ -99,12 +103,15 @@ if __name__ == "__main__":
         __MQTT_TOPIC = args.topic
 
     if args.numbers is not None:
-            NUMBERS = int(args.numbers)
+        __NUMBERS = int(args.numbers)
+
+    if args.threshold is not None:
+        __THRESHOLD = int(args.threshold)
 
 
     times = []
-
     discharge_capacity(__PIN)
+    last_average = 0
 
     try:
         while True:
@@ -117,7 +124,12 @@ if __name__ == "__main__":
                 times.append(charge_time)
                 delta_t = datetime.now() - start_time
             average_time = round(sum(times) / float(len(times)), __NUMBERS)
-            mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
+            
+            # only publish update if threshold is reached
+            if math.fabs(last_average - average_time) >= __THRESHOLD:
+                mqtt_publish(__MQTT_SERVER, __MQTT_TOPIC, average_time)
+            last_average = average_time
+            
             times = []
 
     except KeyboardInterrupt:
